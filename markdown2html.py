@@ -53,7 +53,7 @@ if __name__ == "__main__":
             lines_in_html.append("</ol>\n")
 
         else:
-            lines_in_html.append(f"{line}\n")  # Ensure there's a newline after each line
+            lines_in_html.append(f"{line}\n")
             i += 1
 
     with open(sys.argv[2], 'w') as file:
