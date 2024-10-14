@@ -20,12 +20,16 @@ def convert_bold_and_emphasis(text):
 
 def convert_md5(text):
     """Convert text inside [[ ]] to its MD5 hash."""
-    return re.sub(r'\[\[(.*?)\]\]', lambda match: hashlib.md5(match.group(1).encode()).hexdigest(), text)
+    return re.sub(r'\[\[(.*?)\]\]',
+                  lambda match: hashlib.md5(match.group(1)
+                                            .encode()).hexdigest(), text)
 
 
 def remove_c(text):
     """Remove all 'c' (case insensitive) from text inside (( ))."""
-    return re.sub(r'\(\((.*?)\)\)', lambda match: match.group(1).replace('c', '').replace('C', ''), text)
+    return re.sub(r'\(\((.*?)\)\)',
+                  lambda match: match.group(1)
+                  .replace('c', '').replace('C', ''), text)
 
 
 if __name__ == "__main__":
