@@ -1,6 +1,4 @@
 #!/usr/bin/python3
-''' markdown to html made with python 
-'''
 
 import sys
 import os
