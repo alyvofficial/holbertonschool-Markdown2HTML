@@ -1,43 +1,58 @@
 #!/usr/bin/python3
-"""
-This script converts Markdown to HTML.
-"""
-import os
+"""some script to start"""
+
 import sys
-import re
-# Ensure the script is executable
-os.chmod(__file__, 0o755)
-if __name__ == '__main__':
-    # Test if the number of arguments passed is 2
-    if len(sys.argv) != 3:
-        print('Usage:./markdown2html.py README.md README.html', 
-              file=sys.stderr)
+import os
+
+if __name__ == "__main__":
+    if len(sys.argv) < 3:
+        sys.stderr.write("Usage: ./markdown2html.py README.md README.html\n")
         sys.exit(1)
-    # Store the arguments into variables
-    input_file = sys.argv[1]
-    output_file = sys.argv[2]
-    # Check if the markdown file exists and is a file
-    if not os.path.isfile(input_file):
-        print(f'Missing {input_file}', file=sys.stderr)
+
+    if not os.path.isfile(sys.argv[1]):
+        sys.stderr.write(f"Missing {sys.argv[1]}\n")
         sys.exit(1)
-    # Read the markdown file
-    with open(input_file, 'r', encoding='utf-8') as file_1:
-        html_content = []
-        for line in file_1:
-            line = line.rstrip()  # Remove trailing newlines
-            heading = re.match(r'^(#{1,6}) (.*)', line)  # Match headings
-            if heading:
-                h_level = len(heading.group(1))  # Number of #
-                content = heading.group(2)  # Heading content
-                html_content.append(
-                    f'<h{h_level}>{content}</h{h_level}>\n'
-                )
-            else:
-                # Add paragraph or other content
-                html_content.append(f'<p>{line}</p>\n')
-    # Write the converted HTML content to the output file
-    with open(output_file, 'w', encoding='utf-8') as file_2:
-        file_2.writelines(html_content)
-    # Ensure a newline at the end of the file
-    file_2.write('\n')
-    sys.exit(0)
+
+    with open(sys.argv[1], 'r') as file:
+        lines = file.readlines()
+
+    lines_in_html = []
+
+    i = 0
+    while i < len(lines):
+        line = lines[i].strip()
+
+        # headings
+        if line.startswith("#"):
+            level = line.count("#")
+            text = line.strip("#").strip()
+            html = f"<h{level}>{text}</h{level}>\n"
+            lines_in_html.append(html)
+            i += 1
+
+        # unordered lists
+        elif line.startswith("-"):
+            lines_in_html.append("<ul>\n")
+            while i < len(lines) and lines[i].strip().startswith("-"):
+                text = lines[i].strip("-").strip()
+                html = f"<li>{text}</li>\n"
+                lines_in_html.append(html)
+                i += 1
+            lines_in_html.append("</ul>\n")
+
+        # ordered lists
+        elif line.startswith("*"):
+            lines_in_html.append("<ol>\n")
+            while i < len(lines) and lines[i].strip().startswith("*"):
+                text = lines[i].strip("*").strip()
+                html = f"<li>{text}</li>\n"
+                lines_in_html.append(html)
+                i += 1
+            lines_in_html.append("</ol>\n")
+
+        else:
+            lines_in_html.append(f"{line}")
+            i += 1
+
+    with open(sys.argv[2], 'w') as file:
+        file.writelines(lines_in_html)
