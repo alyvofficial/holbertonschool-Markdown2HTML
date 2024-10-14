@@ -3,13 +3,8 @@
 This script converts Markdown to HTML.
 """
 
-import os
 import sys
 import re
-
-# Ensure the script is executable
-# Using octal value 0o755 for read, write, and execute for owner, and read/execute for group and others
-os.chmod(__file__, 0o755)
 
 if __name__ == '__main__':
     # Test if the number of arguments passed is 2
