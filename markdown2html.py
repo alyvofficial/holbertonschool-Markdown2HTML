@@ -4,6 +4,7 @@
 import os
 import sys
 import re
+import hashlib
 
 
 # Ensure the script is executable
@@ -15,6 +16,16 @@ def convert_bold_and_emphasis(text):
     text = re.sub(r'\*\*(.*?)\*\*', r'<b>\1</b>', text)
     text = re.sub(r'__(.*?)__', r'<em>\1</em>', text)
     return text
+
+
+def convert_md5(text):
+    """Convert text inside [[ ]] to its MD5 hash."""
+    return re.sub(r'\[\[(.*?)\]\]', lambda match: hashlib.md5(match.group(1).encode()).hexdigest(), text)
+
+
+def remove_c(text):
+    """Remove all 'c' (case insensitive) from text inside (( ))."""
+    return re.sub(r'\(\((.*?)\)\)', lambda match: match.group(1).replace('c', '').replace('C', ''), text)
 
 
 if __name__ == "__main__":
@@ -37,6 +48,8 @@ if __name__ == "__main__":
     for line in lines:
         stripped_line = line.strip()
         stripped_line = convert_bold_and_emphasis(stripped_line)
+        stripped_line = convert_md5(stripped_line)
+        stripped_line = remove_c(stripped_line)
 
         # Process headings
         if stripped_line.startswith("#"):
