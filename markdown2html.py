@@ -19,42 +19,49 @@ if __name__ == "__main__":
         lines = file.readlines()
 
     lines_in_html = []
+    current_paragraph = []
 
-    i = 0
-    while i < len(lines):
-        line = lines[i].strip()
+    for line in lines:
+        stripped_line = line.strip()
 
-        # headings
-        if line.startswith("#"):
-            level = line.count("#")
-            text = line.strip("#").strip()
+        # Process headings
+        if stripped_line.startswith("#"):
+            level = stripped_line.count("#")
+            text = stripped_line.strip("#").strip()
             html = f"<h{level}>{text}</h{level}>\n"
             lines_in_html.append(html)
-            i += 1
 
-        # unordered lists
-        elif line.startswith("-"):
+        # Process unordered lists
+        elif stripped_line.startswith("-"):
+            if current_paragraph:  # Close current paragraph if it exists
+                lines_in_html.append("<p>\n" + "<br />\n".join(current_paragraph) + "</p>\n")
+                current_paragraph = []
             lines_in_html.append("<ul>\n")
-            while i < len(lines) and lines[i].strip().startswith("-"):
-                text = lines[i].strip("-").strip()
-                html = f"<li>{text}</li>\n"
-                lines_in_html.append(html)
-                i += 1
-            lines_in_html.append("</ul>\n")
+            text = stripped_line.strip("-").strip()
+            lines_in_html.append(f"<li>{text}</li>\n")
 
-        # ordered lists
-        elif line.startswith("*"):
+        # Process ordered lists (if needed, you can extend this)
+        elif stripped_line.startswith("*"):
+            if current_paragraph:  # Close current paragraph if it exists
+                lines_in_html.append("<p>\n" + "<br />\n".join(current_paragraph) + "</p>\n")
+                current_paragraph = []
             lines_in_html.append("<ol>\n")
-            while i < len(lines) and lines[i].strip().startswith("*"):
-                text = lines[i].strip("*").strip()
-                html = f"<li>{text}</li>\n"
-                lines_in_html.append(html)
-                i += 1
-            lines_in_html.append("</ol>\n")
+            text = stripped_line.strip("*").strip()
+            lines_in_html.append(f"<li>{text}</li>\n")
 
+        # Process empty lines (indicating end of a paragraph)
+        elif not stripped_line:
+            if current_paragraph:
+                lines_in_html.append("<p>\n" + "<br />\n".join(current_paragraph) + "</p>\n")
+                current_paragraph = []
+
+        # Process regular text
         else:
-            lines_in_html.append(f"{line}\n")
-            i += 1
+            current_paragraph.append(stripped_line)
+
+    # Close any remaining paragraph
+    if current_paragraph:
+        lines_in_html.append("<p>\n" + "<br />\n".join(current_paragraph) + "</p>\n")
 
     with open(sys.argv[2], 'w') as file:
         file.writelines(lines_in_html)
