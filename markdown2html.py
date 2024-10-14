@@ -1,8 +1,10 @@
 #!/usr/bin/python3
 """some script to start"""
 
-import sys
 import os
+import sys
+
+os.chmod(__file__, 0o755)  # Ensure the script is executable
 
 if __name__ == "__main__":
     if len(sys.argv) < 3:
@@ -51,8 +53,12 @@ if __name__ == "__main__":
             lines_in_html.append("</ol>\n")
 
         else:
-            lines_in_html.append(f"{line}")
+            lines_in_html.append(f"{line}\n")  # Ensure there's a newline after each line
             i += 1
 
     with open(sys.argv[2], 'w') as file:
         file.writelines(lines_in_html)
+
+    # Optional: write a newline at the end of the file for good measure
+    with open(sys.argv[2], 'a') as file:
+        file.write('\n')
