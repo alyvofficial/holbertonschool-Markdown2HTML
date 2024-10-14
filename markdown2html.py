@@ -56,4 +56,3 @@ if __name__ == "__main__":
 
     with open(sys.argv[2], 'w') as file:
         file.writelines(lines_in_html)
-        
