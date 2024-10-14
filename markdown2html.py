@@ -2,11 +2,9 @@
 """
 This script converts Markdown to HTML.
 """
-
 import sys
 import os
 import re
-
 if __name__ == '__main__':
     # Test if the number of arguments passed is 2
     if len(sys.argv) != 3:
