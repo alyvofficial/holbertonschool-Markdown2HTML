@@ -13,7 +13,8 @@ os.chmod(__file__, 0o755)
 if __name__ == '__main__':
     # Test if the number of arguments passed is 2
     if len(sys.argv) != 3:
-        print('Usage: ./markdown2html.py README.md README.html', file=sys.stderr)
+        print('Usage: ./markdown2html.py README.md README.html', 
+              file=sys.stderr)
         sys.exit(1)
 
     # Store the arguments into variables
