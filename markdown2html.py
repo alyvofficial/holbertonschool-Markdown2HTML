@@ -8,13 +8,13 @@ import sys
 import re
 
 # Ensure the script is executable
-# Using octal value 0o755 for read, write, and execute for owner, and read/execute for group and others
 os.chmod(__file__, 0o755)
 
 if __name__ == '__main__':
     # Test if the number of arguments passed is 2
     if len(sys.argv) != 3:
-        print('Usage: ./markdown2html.py README.md README.html', file=sys.stderr)
+        print('Usage: ./markdown2html.py README.md README.html',
+              file=sys.stderr)
         sys.exit(1)
 
     # Store the arguments into variables
@@ -35,7 +35,9 @@ if __name__ == '__main__':
             if heading:
                 h_level = len(heading.group(1))  # Number of #
                 content = heading.group(2)  # Heading content
-                html_content.append(f'<h{h_level}>{content}</h{h_level}>\n')
+                html_content.append(
+                    f'<h{h_level}>{content}</h{h_level}>\n'
+                )
             else:
                 html_content.append(f'{line}\n')
 
