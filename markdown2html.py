@@ -5,14 +5,17 @@ import os
 import sys
 import re
 
+
 # Ensure the script is executable
 os.chmod(__file__, 0o755)
+
 
 def convert_bold_and_emphasis(text):
     """Convert markdown bold and emphasis to HTML."""
     text = re.sub(r'\*\*(.*?)\*\*', r'<b>\1</b>', text)
     text = re.sub(r'__(.*?)__', r'<em>\1</em>', text)
     return text
+
 
 if __name__ == "__main__":
     if len(sys.argv) < 3:
