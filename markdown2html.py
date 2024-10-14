@@ -1,10 +1,11 @@
 #!/usr/bin/python3
-"""some script to start"""
+"""Some script to convert Markdown to HTML"""
 
 import os
 import sys
 
-os.chmod(__file__, 0o755)  # Ensure the script is executable
+# Ensure the script is executable
+os.chmod(__file__, 0o755)
 
 if __name__ == "__main__":
     if len(sys.argv) < 3:
@@ -33,8 +34,11 @@ if __name__ == "__main__":
 
         # Process unordered lists
         elif stripped_line.startswith("-"):
-            if current_paragraph:  # Close current paragraph if it exists
-                lines_in_html.append("<p>\n" + "<br />\n".join(current_paragraph) + "</p>\n")
+            if current_paragraph:
+                # Close current paragraph if it exists
+                lines_in_html.append("<p>\n")
+                lines_in_html.append("<br />\n".join(current_paragraph))
+                lines_in_html.append("</p>\n")
                 current_paragraph = []
             lines_in_html.append("<ul>\n")
             text = stripped_line.strip("-").strip()
@@ -42,8 +46,10 @@ if __name__ == "__main__":
 
         # Process ordered lists (if needed, you can extend this)
         elif stripped_line.startswith("*"):
-            if current_paragraph:  # Close current paragraph if it exists
-                lines_in_html.append("<p>\n" + "<br />\n".join(current_paragraph) + "</p>\n")
+            if current_paragraph:
+                lines_in_html.append("<p>\n")
+                lines_in_html.append("<br />\n".join(current_paragraph))
+                lines_in_html.append("</p>\n")
                 current_paragraph = []
             lines_in_html.append("<ol>\n")
             text = stripped_line.strip("*").strip()
@@ -52,7 +58,9 @@ if __name__ == "__main__":
         # Process empty lines (indicating end of a paragraph)
         elif not stripped_line:
             if current_paragraph:
-                lines_in_html.append("<p>\n" + "<br />\n".join(current_paragraph) + "</p>\n")
+                lines_in_html.append("<p>\n")
+                lines_in_html.append("<br />\n".join(current_paragraph))
+                lines_in_html.append("</p>\n")
                 current_paragraph = []
 
         # Process regular text
@@ -61,7 +69,9 @@ if __name__ == "__main__":
 
     # Close any remaining paragraph
     if current_paragraph:
-        lines_in_html.append("<p>\n" + "<br />\n".join(current_paragraph) + "</p>\n")
+        lines_in_html.append("<p>\n")
+        lines_in_html.append("<br />\n".join(current_paragraph))
+        lines_in_html.append("</p>\n")
 
     with open(sys.argv[2], 'w') as file:
         file.writelines(lines_in_html)
