@@ -21,6 +21,8 @@ if __name__ == "__main__":
 
     lines_in_html = []
     current_paragraph = []
+    in_ul = False
+    in_ol = False
 
     for line in lines:
         stripped_line = line.strip()
@@ -34,24 +36,23 @@ if __name__ == "__main__":
 
         # Process unordered lists
         elif stripped_line.startswith("-"):
-            if current_paragraph:
-                # Close current paragraph if it exists
-                lines_in_html.append("<p>\n")
-                lines_in_html.append("<br />\n".join(current_paragraph))
-                lines_in_html.append("</p>\n")
-                current_paragraph = []
-            lines_in_html.append("<ul>\n")
+            if in_ol:
+                lines_in_html.append("</ol>\n")
+                in_ol = False
+            if not in_ul:
+                lines_in_html.append("<ul>\n")
+                in_ul = True
             text = stripped_line.strip("-").strip()
             lines_in_html.append(f"<li>{text}</li>\n")
 
-        # Process ordered lists (if needed, you can extend this)
+        # Process ordered lists
         elif stripped_line.startswith("*"):
-            if current_paragraph:
-                lines_in_html.append("<p>\n")
-                lines_in_html.append("<br />\n".join(current_paragraph))
-                lines_in_html.append("</p>\n")
-                current_paragraph = []
-            lines_in_html.append("<ol>\n")
+            if in_ul:
+                lines_in_html.append("</ul>\n")
+                in_ul = False
+            if not in_ol:
+                lines_in_html.append("<ol>\n")
+                in_ol = True
             text = stripped_line.strip("*").strip()
             lines_in_html.append(f"<li>{text}</li>\n")
 
@@ -62,6 +63,12 @@ if __name__ == "__main__":
                 lines_in_html.append("<br />\n".join(current_paragraph))
                 lines_in_html.append("</p>\n")
                 current_paragraph = []
+            if in_ul:
+                lines_in_html.append("</ul>\n")
+                in_ul = False
+            if in_ol:
+                lines_in_html.append("</ol>\n")
+                in_ol = False
 
         # Process regular text
         else:
@@ -72,6 +79,10 @@ if __name__ == "__main__":
         lines_in_html.append("<p>\n")
         lines_in_html.append("<br />\n".join(current_paragraph))
         lines_in_html.append("</p>\n")
+    if in_ul:
+        lines_in_html.append("</ul>\n")
+    if in_ol:
+        lines_in_html.append("</ol>\n")
 
     with open(sys.argv[2], 'w') as file:
         file.writelines(lines_in_html)
